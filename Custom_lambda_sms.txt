@@ -1,0 +1,71 @@
+#############################karcirc lambda custom sms with pinpoint##############################################################
+1. Increase Execution time to 3 min
+2. Attach below policy for Sending sms
+
+const appId = "265cc070520a4fb1aaa0b04cb4da9bbf";
+//const destination = "+918605478421";
+
+const { Pinpoint } = require('aws-sdk');
+const pinpoint = new Pinpoint();
+
+const payloadFn = (appId, destination, message) => {
+  const ApplicationId = appId;
+
+  const Addresses = {};
+  Addresses[destination] = { ChannelType: 'SMS' };
+
+  const MessageConfiguration = {
+    SMSMessage: {
+      Body: message,
+      MessageType: 'TRANSACTIONAL',
+      SenderId: 'CloudwatchAlert'
+    }
+  };
+
+  return {
+    ApplicationId,
+    MessageRequest: { 
+      Addresses,
+      MessageConfiguration
+    }
+  };
+};
+
+exports.handler = async event => {
+  console.log("event = "+event);
+//      console.log("event message "+(event.message));
+//      console.log("event mobile_number "+(event.mobile_number));
+
+  const message = event.message; //'Good-Work';
+  var numbers=  event.mobile_number; 
+  //"+919309580371,+918605478421";
+  // var numbers = numbers.split(",");
+         console.log("\nnumbers:"+numbers);
+
+  for(let i=0;i<numbers.length;i++){
+    var mobilenumber = numbers[i];
+   // for (let i in numbers){
+      console.log("\n mobilenumber:"+mobilenumber);
+     const payload = payloadFn(appId,mobilenumber, message);
+      await pinpoint.sendMessages(payload).promise();
+
+    }
+  };
+  
+  
+=======================================Send SMS IAM Policy===============================================================
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Effect": "Allow",
+      "Action": [
+        "logs:CreateLogStream",
+        "logs:CreateLogGroup",
+        "logs:PutLogEvents",
+        "mobiletargeting:SendMessages"
+      ],
+      "Resource": "*"
+    }
+  ]
+}
