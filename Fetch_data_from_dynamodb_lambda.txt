@@ -1,15 +1,15 @@
 =======================================Fetch data from dynamodb===============================================================
 1. Increase excution time
-2. Give access to Dynamodb full access
+2. Give IAM Role to Dynamodb full access
 
 const AWS = require('aws-sdk');
 const docClient = new AWS.DynamoDB.DocumentClient();
 
 const params = {
-  TableName : 'AllHealthData-wqvzsupknbanna5kafwny2asey-dev',
+  TableName : 'Give Table Name From You Fetch Data',
   /* Item properties will depend on your application concerns */
   Key: {
-    id: '01f07f6e-f292-4850-9ecb-54224bca260f'
+    id: 'Give Id of Coloumn'
   }
 }
 
