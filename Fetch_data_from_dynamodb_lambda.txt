@@ -1,0 +1,32 @@
+=======================================Fetch data from dynamodb===============================================================
+1. Increase excution time
+2. Give access to Dynamodb full access
+
+const AWS = require('aws-sdk');
+const docClient = new AWS.DynamoDB.DocumentClient();
+
+const params = {
+  TableName : 'AllHealthData-wqvzsupknbanna5kafwny2asey-dev',
+  /* Item properties will depend on your application concerns */
+  Key: {
+    id: '01f07f6e-f292-4850-9ecb-54224bca260f'
+  }
+}
+
+async function getItem(){
+  try {
+    const data = await docClient.get(params).promise()
+    return data
+  } catch (err) {
+    return err
+  }
+}
+
+exports.handler = async (event, context) => {
+  try {
+    const data = await getItem()
+    return { body: JSON.stringify(data) }
+  } catch (err) {
+    return { error: err }
+  }
+}
