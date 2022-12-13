@@ -69,3 +69,5 @@ exports.handler = async event => {
     }
   ]
 }
+==============================================Inovke Through Flutter===============================================================================
+1. https://omer-bayram.medium.com/invoking-a-aws-lambda-function-directly-from-a-flutter-app-with-response-without-using-api-gateway-457acbe277e7
