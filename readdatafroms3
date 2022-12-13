@@ -1,0 +1,24 @@
+***********************************************This Code For Nodejs***************************************************************************************************
+a. Increase Execution Time
+b. add IAM role to read s3 data
+
+#Code Start
+
+
+var AWS = require("aws-sdk");
+var s3 = new AWS.S3({apiVersion: '2006-03-01'});
+var params = {Bucket: 'Bucket-Name', Key: 'File-name uploded in s3'};
+
+exports.handler = function index(event, context, callback) {
+    s3.getObject(params , function (err, data) {
+
+    if (err) {
+        console.log(err);
+    } else {
+        console.log(data.Body.toString());
+    }
+    
+})
+ 
+
+}
