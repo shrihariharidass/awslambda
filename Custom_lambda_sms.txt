@@ -1,9 +1,9 @@
-#############################karcirc lambda custom sms with pinpoint##############################################################
+#############################SLmabda Function for send dynamic message through pinpoint service##############################################################
 1. Increase Execution time to 3 min
 2. Attach below policy for Sending sms
 
-const appId = "265cc070520a4fb1aaa0b04cb4da9bbf";
-//const destination = "+918605478421";
+const appId = "PinPoint Application ID";
+//const destination = "Your Number ";
 
 const { Pinpoint } = require('aws-sdk');
 const pinpoint = new Pinpoint();
@@ -38,7 +38,7 @@ exports.handler = async event => {
 
   const message = event.message; //'Good-Work';
   var numbers=  event.mobile_number; 
-  //"+919309580371,+918605478421";
+ 
   // var numbers = numbers.split(",");
          console.log("\nnumbers:"+numbers);
 
