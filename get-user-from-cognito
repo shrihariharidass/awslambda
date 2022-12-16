@@ -109,3 +109,74 @@ exports.handler =  function(event, context, callback) {
     
   });
 }
+==============================================Anaya Code===============================================
+var AWS = require("aws-sdk");
+
+const cognitoidentityserviceprovider = new AWS.CognitoIdentityServiceProvider();
+
+exports.handler =  function(event, context, callback) {
+  
+  const phoneNumber =  "+917559412489"; //event.phoneNumber 
+
+  var params = {
+    
+    
+
+  //   "AttributesToGet": [],
+  // //  "Filter": "phone_number ^= \"\"",
+  //   "UserPoolId": "us-east-1_IF3R2sSWI",
+
+    UserPoolId: "us-east-1_IF3R2sSWI",
+    // AttributesToGet: ["phone_number","custom:roleCode"]
+
+  };
+  
+
+  cognitoidentityserviceprovider.listUsers(params, (err, data) => {
+    
+    try{
+    // var  phoneNumber = "+919607496849";
+        var  phoneNumber =  params.phoneNumber;
+
+    
+    if (err) {
+     // console.log("before error---------------------------->");
+      console.log(err, err.stack);
+      callback(err)        // here is the error return
+      
+    } else {
+      
+      
+        // const phoneNum = "+917559412489";
+            console.log("data:  "+data);
+        
+          // check admin exist or not
+          // ----------------------------------------------------
+          for (let i = 0; i < data.Users.length; i++) {
+            var att = data.Users[i].Attributes;
+            
+
+            var loopPhone = att[4].Value;
+            var loopRoleCode = att[5].Value;
+
+            console.log("-----------loopPhone = "+loopPhone+", attrValue = "+loopRoleCode);
+  
+             if(loopPhone == phoneNumber && loopRoleCode ==  "R001"){
+              return callback(null, true)
+              
+             }
+           
+          }
+        }
+        // ----------------------------------------------------
+    }catch(e){
+      console.log("Error in get users. Error: "+e)
+       callback(e)  
+    }
+
+    callback(null, false) // here is the success return
+
+
+    
+  });
+}
