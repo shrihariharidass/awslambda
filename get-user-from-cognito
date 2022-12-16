@@ -1,0 +1,29 @@
+var AWS = require("aws-sdk");
+
+const cognitoidentityserviceprovider = new AWS.CognitoIdentityServiceProvider();
+
+exports.handler =  function(event, context, callback) {
+  
+  //const adminPhoneNumber = event.admin_phone; 
+
+  var params = {
+    
+    UserPoolId: "Enter your user pool id",
+    AttributesToGet: ["phone_number","custom:roleCode"]
+
+  };
+  
+
+  cognitoidentityserviceprovider.listUsers(params, (err, data) => {
+    
+    if (err) {
+      console.log(err, err.stack);
+      callback(err)        // here is the error return
+      
+    } else {
+      
+      callback(null, data) // here is the success return
+    }
+    
+  });
+}
