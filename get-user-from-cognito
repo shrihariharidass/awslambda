@@ -27,3 +27,85 @@ exports.handler =  function(event, context, callback) {
     
   });
 }
+
+
+
+============================================================Custom COde======================================
+var AWS = require("aws-sdk");
+
+const cognitoidentityserviceprovider = new AWS.CognitoIdentityServiceProvider();
+
+exports.handler =  function(event, context, callback) {
+  
+  //const adminPhoneNumber = event.admin_phone; 
+
+  var params = {
+    
+    
+
+    "AttributesToGet": [],
+  //  "Filter": "phone_number ^= \"\"",
+    "UserPoolId": "us-east-1_IF3R2sSWI",
+
+    UserPoolId: "us-east-1_IF3R2sSWI",
+    AttributesToGet: ["phone_number","custom:roleCode"]
+
+  };
+  
+
+  cognitoidentityserviceprovider.listUsers(params, (err, data) => {
+    
+    if (err) {
+      console.log("before error---------------------------->");
+      console.log(err, err.stack);
+      callback(err)        // here is the error return
+      
+    } else {
+      
+      callback(null, data) // here is the success return
+    // console.log("My logs"+JSON.stringify(data.Users[0].Attributes[0].Value, null, 4));
+        var phoneNum ="+917020418245";
+
+    for (let i = 0; i < data.Users.length; i++) {
+      var att = data.Users[i].Attributes;
+                     for (let j = 0; j < att.length; j++) {
+          
+            var number = att[j].Value;
+                           console.log("roll:  "+att[0].Value);
+
+            if( phoneNum==number){
+              //for number use j =0  
+              // rollcode use j=1
+              var roll =1
+                console.log("roll:  "+att[roll].Value);
+                
+                var rollecode = att[roll].Value;
+                
+                if(rollecode == "R001"){
+                  
+                  console.log("rolecode found: "+rollecode);
+                 // return true;
+                }
+            
+            }
+              
+          
+          
+        }
+        if(i==data.Users.length){
+          
+          console.log("number not found");
+          return false;
+          
+        }
+
+}
+
+  //  console.log("My logs"+JSON.stringify(data, null, 4));
+    
+  //  const obj = JSON.parse(text);
+
+    }
+    
+  });
+}
