@@ -1,0 +1,44 @@
+=====================================Send Dynamic Email Using Lambda=====================================================
+1. Firstly If you want to send email to non verify user create a new pinpoint project 
+2. to send email verify firstly source email 
+3. then by default it going to sandbox, 
+4. request to go production then we will send mail to un-verify user
+
+
+=========================================Function in Node.js=============================================================
+var aws = require("aws-sdk");
+var ses = new aws.SES({ region: "us-east-1" });
+exports.handler = async function (event) {
+  var params = {
+    Destination: {
+      ToAddresses: event.toAddresses,
+    },
+    Message: {
+      Body: {
+        Text: { Data: event.emailBody },
+      },
+
+      Subject: { Data: event.emailSubject },
+    },
+    Source: "Source@email.com",
+  };
+ 
+  return ses.sendEmail(params).promise()
+};
+
+
+===============================================IAM Policy to send Email=========================================================
+
+{
+    "Version": "2012-10-17",
+    "Statement": [
+        {
+            "Effect": "Allow",
+            "Action": [
+                "ses:SendEmail",
+                "ses:SendRawEmail"
+            ],
+            "Resource": "*"
+        }
+    ]
+}
