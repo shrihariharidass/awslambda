@@ -1,0 +1,68 @@
+const AWS = require('aws-sdk');
+const dynamodb = new AWS.DynamoDB.DocumentClient();
+  const dynamodbTableName = 'NotificationData-i3kxpsrtvvab3ktyogihp37gwi-staging';
+  
+ async function getToken(mobileNumber) {
+   console.log("mobile = "+mobileNumber)
+  const params = {
+    TableName: dynamodbTableName,
+    ProjectionExpression: "firebaseToken", 
+            FilterExpression: 'mobile = :val1',
+
+            ExpressionAttributeValues: {
+                ':val1': mobileNumber,
+                
+
+            }
+
+  }
+  return await dynamodb.scan(params).promise()
+   
+}
+exports.handler = async (event, context) => {
+  // console.log(event);
+  // return event
+  
+  var data = await getToken(event.mobile);
+  var token = data.Items[0].firebaseToken;
+  var messageData = event.message;
+  // Set the parameters for the push notification
+  const applicationId = '391dda5da1c34c6e9037620d6c094a52';
+  const message = messageData;
+  const target = {
+    Type: 'GCM',
+    Address: token
+    
+  };
+  
+  
+ 
+  // Create a Pinpoint client
+  const client = new AWS.Pinpoint();
+  // Send the push notification
+  const params = {
+    ApplicationId: applicationId,
+    MessageRequest: {
+      Addresses: {
+        [target.Address]: {
+          ChannelType: target.Type
+        }
+      },
+      MessageConfiguration: {
+        GCMMessage: {
+          Body: message,
+          Title: 'YOUR_NOTIFICATION_TITLE'
+        }
+      }
+    }
+  };
+  
+ 
+  // console.log("items = "+JSON.stringify(data));
+// 
+  // console.log("token is here ---------------------"+token);
+  console.log(params);
+  const response = await client.sendMessages(params).promise();
+  // Print the response from Pinpoint
+  console.log(response);
+};
